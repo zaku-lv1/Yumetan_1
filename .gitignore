@@ -1,0 +1,19 @@
+# Temporary files
+/tmp/
+*.tmp
+*.log
+
+# Server files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Node modules (if added later)
+node_modules/
+
+# Build artifacts (if added later)
+dist/
+build/

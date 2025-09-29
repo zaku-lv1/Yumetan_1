@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユメタン1 クイズアプリ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ユメタン1 クイズアプリ</h1>
+            <p>英単語の学習をクイズ形式で楽しもう！</p>
+        </header>
+
+        <!-- 範囲選択画面 -->
+        <div id="unit-selection" class="screen">
+            <h2>出題範囲を指定してください</h2>
+            <p class="range-description">1〜200語の中から学習範囲を指定できます。複数の範囲を追加することも可能です。</p>
+            
+            <div class="range-controls">
+                <div id="range-list" class="range-list">
+                    <!-- 初期範囲 -->
+                    <div class="range-item">
+                        <label>範囲 1:</label>
+                        <input type="number" class="range-start" min="1" max="200" value="1" placeholder="開始">
+                        <span>〜</span>
+                        <input type="number" class="range-end" min="1" max="200" value="50" placeholder="終了">
+                        <button type="button" class="remove-range" title="この範囲を削除">×</button>
+                    </div>
+                </div>
+                
+                <button type="button" id="add-range" class="btn-secondary">範囲を追加</button>
+            </div>
+            
+            <div class="preset-ranges">
+                <h3>よく使われる範囲:</h3>
+                <div class="preset-buttons">
+                    <button type="button" class="preset-btn" data-ranges="1-50">1〜50語</button>
+                    <button type="button" class="preset-btn" data-ranges="51-100">51〜100語</button>
+                    <button type="button" class="preset-btn" data-ranges="101-150">101〜150語</button>
+                    <button type="button" class="preset-btn" data-ranges="151-200">151〜200語</button>
+                    <button type="button" class="preset-btn" data-ranges="1-100">1〜100語</button>
+                    <button type="button" class="preset-btn" data-ranges="1-200">全範囲 (1〜200語)</button>
+                </div>
+            </div>
+            <div class="quiz-type-selection">
+                <h3>クイズタイプを選択:</h3>
+                <div class="quiz-type-item">
+                    <input type="radio" id="en-to-ja" name="quiz-type" value="en-to-ja" checked>
+                    <label for="en-to-ja">英語→日本語（選択問題）</label>
+                </div>
+                <div class="quiz-type-item">
+                    <input type="radio" id="ja-to-en" name="quiz-type" value="ja-to-en">
+                    <label for="ja-to-en">日本語→英語（綴り問題）</label>
+                </div>
+            </div>
+            <button id="start-quiz" class="btn-primary">クイズ開始</button>
+        </div>
+
+        <!-- 英語→日本語クイズ画面 -->
+        <div id="en-to-ja-quiz" class="screen hidden">
+            <div class="quiz-header">
+                <span id="question-counter">問題 1 / 10</span>
+                <span id="score">正解数: 0</span>
+            </div>
+            <div class="question-section">
+                <h2 id="english-word">Loading...</h2>
+                <div id="choices" class="choices-grid">
+                    <!-- 選択肢がここに動的に追加される -->
+                </div>
+            </div>
+            <button id="next-question" class="btn-primary hidden">次の問題</button>
+            <button id="back-to-menu" class="btn-secondary hidden">メニューに戻る</button>
+        </div>
+
+        <!-- 日本語→英語クイズ画面 -->
+        <div id="ja-to-en-quiz" class="screen hidden">
+            <div class="quiz-header">
+                <span id="spelling-question-counter">問題 1 / 10</span>
+                <span id="spelling-score">正解数: 0</span>
+            </div>
+            <div class="question-section">
+                <h2 id="japanese-word">Loading...</h2>
+                <p class="instruction">英単語を入力してください:</p>
+                <input type="text" id="spelling-input" placeholder="英単語を入力...">
+                <button id="check-spelling" class="btn-primary">回答</button>
+                <div id="spelling-feedback" class="feedback hidden"></div>
+            </div>
+            <button id="next-spelling-question" class="btn-primary hidden">次の問題</button>
+            <button id="back-to-menu-spelling" class="btn-secondary hidden">メニューに戻る</button>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="results" class="screen hidden">
+            <h2>クイズ結果</h2>
+            <div id="final-score"></div>
+            <div id="performance-message"></div>
+            <button id="restart-quiz" class="btn-primary">もう一度</button>
+            <button id="back-to-menu-results" class="btn-secondary">メニューに戻る</button>
+        </div>
+    </div>
+
+    <script src="vocabulary.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
