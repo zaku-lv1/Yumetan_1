@@ -50,36 +50,119 @@ header p {
     display: none;
 }
 
-/* ユニット選択 */
-.unit-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
+/* 範囲選択 */
+.range-description {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+}
+
+.range-controls {
     margin-bottom: 30px;
 }
 
-.unit-item {
+.range-list {
+    margin-bottom: 20px;
+}
+
+.range-item {
     display: flex;
     align-items: center;
-    padding: 10px;
+    gap: 10px;
+    padding: 15px;
     border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
     transition: all 0.3s ease;
 }
 
-.unit-item:hover {
+.range-item:hover {
     border-color: #667eea;
     background-color: #f8f9ff;
 }
 
-.unit-item input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.2);
+.range-item label {
+    font-weight: 600;
+    color: #555;
+    min-width: 60px;
 }
 
-.unit-item label {
+.range-start, .range-end {
+    width: 80px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1em;
+}
+
+.range-start:focus, .range-end:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.remove-range {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.remove-range:hover {
+    background: #ff5252;
+    transform: scale(1.1);
+}
+
+#add-range {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* プリセット範囲 */
+.preset-ranges {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.preset-ranges h3 {
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 1.1em;
+}
+
+.preset-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.preset-btn {
+    padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.9em;
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+    border-color: #667eea;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    transform: translateY(-1px);
 }
 
 /* クイズタイプ選択 */
@@ -310,6 +393,20 @@ header p {
     .unit-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+    }
+    
+    .preset-buttons {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .range-item {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .range-start, .range-end {
+        width: 70px;
     }
     
     .choices-grid {

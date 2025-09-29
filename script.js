@@ -4,11 +4,12 @@ class YumetanQuiz {
         this.currentQuestions = [];
         this.currentQuestionIndex = 0;
         this.score = 0;
-        this.selectedUnits = [];
+        this.selectedRanges = [];
         this.quizType = 'en-to-ja';
         this.maxQuestions = 10;
         
         this.initEventListeners();
+        this.initRangeControls();
     }
 
     initEventListeners() {
@@ -34,18 +35,121 @@ class YumetanQuiz {
         document.getElementById('back-to-menu-results').addEventListener('click', () => this.backToMenu());
     }
 
-    startQuiz() {
-        // 選択されたユニットを取得
-        this.selectedUnits = [];
-        for (let i = 1; i <= 9; i++) {
-            const checkbox = document.getElementById(`unit${i}`);
-            if (checkbox.checked) {
-                this.selectedUnits.push(i);
+    initRangeControls() {
+        // 範囲追加ボタン
+        document.getElementById('add-range').addEventListener('click', () => this.addRangeItem());
+        
+        // プリセットボタン
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => this.applyPreset(btn.dataset.ranges));
+        });
+        
+        // 初期範囲アイテムのイベント設定
+        this.updateRangeEvents();
+    }
+
+    addRangeItem() {
+        const rangeList = document.getElementById('range-list');
+        const rangeCount = rangeList.children.length + 1;
+        
+        const rangeItem = document.createElement('div');
+        rangeItem.className = 'range-item';
+        rangeItem.innerHTML = `
+            <label>範囲 ${rangeCount}:</label>
+            <input type="number" class="range-start" min="1" max="200" value="1" placeholder="開始">
+            <span>〜</span>
+            <input type="number" class="range-end" min="1" max="200" value="50" placeholder="終了">
+            <button type="button" class="remove-range" title="この範囲を削除">×</button>
+        `;
+        
+        rangeList.appendChild(rangeItem);
+        this.updateRangeEvents();
+    }
+
+    updateRangeEvents() {
+        // 削除ボタンのイベント
+        document.querySelectorAll('.remove-range').forEach(btn => {
+            btn.onclick = (e) => {
+                if (document.querySelectorAll('.range-item').length > 1) {
+                    e.target.parentElement.remove();
+                    this.updateRangeLabels();
+                } else {
+                    alert('少なくとも1つの範囲は必要です。');
+                }
+            };
+        });
+        
+        // 範囲入力のバリデーション
+        document.querySelectorAll('.range-start, .range-end').forEach(input => {
+            input.addEventListener('change', (e) => this.validateRange(e.target));
+        });
+    }
+
+    updateRangeLabels() {
+        document.querySelectorAll('.range-item').forEach((item, index) => {
+            item.querySelector('label').textContent = `範囲 ${index + 1}:`;
+        });
+    }
+
+    validateRange(input) {
+        const value = parseInt(input.value);
+        const max = getTotalWordCount();
+        
+        if (value < 1) input.value = 1;
+        if (value > max) input.value = max;
+        
+        // 開始と終了の順序をチェック
+        const rangeItem = input.closest('.range-item');
+        const startInput = rangeItem.querySelector('.range-start');
+        const endInput = rangeItem.querySelector('.range-end');
+        
+        if (parseInt(startInput.value) > parseInt(endInput.value)) {
+            if (input === startInput) {
+                endInput.value = startInput.value;
+            } else {
+                startInput.value = endInput.value;
             }
         }
+    }
 
-        if (this.selectedUnits.length === 0) {
-            alert('少なくとも1つのユニットを選択してください。');
+    applyPreset(rangeString) {
+        const rangeList = document.getElementById('range-list');
+        rangeList.innerHTML = ''; // 既存の範囲をクリア
+        
+        const ranges = rangeString.split(',');
+        ranges.forEach((range, index) => {
+            const [start, end] = range.split('-').map(num => parseInt(num.trim()));
+            
+            const rangeItem = document.createElement('div');
+            rangeItem.className = 'range-item';
+            rangeItem.innerHTML = `
+                <label>範囲 ${index + 1}:</label>
+                <input type="number" class="range-start" min="1" max="200" value="${start}" placeholder="開始">
+                <span>〜</span>
+                <input type="number" class="range-end" min="1" max="200" value="${end}" placeholder="終了">
+                <button type="button" class="remove-range" title="この範囲を削除">×</button>
+            `;
+            
+            rangeList.appendChild(rangeItem);
+        });
+        
+        this.updateRangeEvents();
+    }
+
+    startQuiz() {
+        // 選択された範囲を取得
+        this.selectedRanges = [];
+        document.querySelectorAll('.range-item').forEach(item => {
+            const start = parseInt(item.querySelector('.range-start').value);
+            const end = parseInt(item.querySelector('.range-end').value);
+            
+            if (start && end && start <= end) {
+                this.selectedRanges.push({ start, end });
+            }
+        });
+
+        if (this.selectedRanges.length === 0) {
+            alert('有効な範囲を少なくとも1つ指定してください。');
             return;
         }
 
@@ -70,16 +174,20 @@ class YumetanQuiz {
     }
 
     prepareQuestions() {
-        // 選択されたユニットから全単語を取得
+        // 選択された範囲から全単語を取得
         let allWords = [];
-        this.selectedUnits.forEach(unit => {
-            if (vocabularyData[unit]) {
-                allWords = allWords.concat(vocabularyData[unit]);
-            }
+        this.selectedRanges.forEach(range => {
+            const rangeWords = getWordsByRange(range.start, range.end);
+            allWords = allWords.concat(rangeWords);
         });
 
+        // 重複を削除
+        const uniqueWords = allWords.filter((word, index, self) => 
+            index === self.findIndex(w => w.id === word.id)
+        );
+
         // ランダムに問題を選択
-        this.currentQuestions = this.shuffleArray(allWords).slice(0, this.maxQuestions);
+        this.currentQuestions = this.shuffleArray(uniqueWords).slice(0, this.maxQuestions);
     }
 
     displayEnToJaQuestion() {
@@ -115,12 +223,7 @@ class YumetanQuiz {
         const choices = [correctQuestion.japanese];
         
         // 他の単語から間違った選択肢を生成
-        const allWords = [];
-        Object.values(vocabularyData).forEach(unit => {
-            allWords.push(...unit);
-        });
-        
-        const wrongChoices = allWords
+        const wrongChoices = vocabularyData
             .filter(word => word.japanese !== correctQuestion.japanese)
             .map(word => word.japanese);
         

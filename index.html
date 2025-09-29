@@ -13,45 +13,35 @@
             <p>英単語の学習をクイズ形式で楽しもう！</p>
         </header>
 
-        <!-- ユニット選択画面 -->
+        <!-- 範囲選択画面 -->
         <div id="unit-selection" class="screen">
-            <h2>出題範囲を選択してください</h2>
-            <div class="unit-grid">
-                <div class="unit-item">
-                    <input type="checkbox" id="unit1" value="1" checked>
-                    <label for="unit1">Unit 1</label>
+            <h2>出題範囲を指定してください</h2>
+            <p class="range-description">1〜200語の中から学習範囲を指定できます。複数の範囲を追加することも可能です。</p>
+            
+            <div class="range-controls">
+                <div id="range-list" class="range-list">
+                    <!-- 初期範囲 -->
+                    <div class="range-item">
+                        <label>範囲 1:</label>
+                        <input type="number" class="range-start" min="1" max="200" value="1" placeholder="開始">
+                        <span>〜</span>
+                        <input type="number" class="range-end" min="1" max="200" value="50" placeholder="終了">
+                        <button type="button" class="remove-range" title="この範囲を削除">×</button>
+                    </div>
                 </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit2" value="2" checked>
-                    <label for="unit2">Unit 2</label>
-                </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit3" value="3" checked>
-                    <label for="unit3">Unit 3</label>
-                </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit4" value="4">
-                    <label for="unit4">Unit 4</label>
-                </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit5" value="5">
-                    <label for="unit5">Unit 5</label>
-                </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit6" value="6">
-                    <label for="unit6">Unit 6</label>
-                </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit7" value="7">
-                    <label for="unit7">Unit 7</label>
-                </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit8" value="8">
-                    <label for="unit8">Unit 8</label>
-                </div>
-                <div class="unit-item">
-                    <input type="checkbox" id="unit9" value="9">
-                    <label for="unit9">Unit 9</label>
+                
+                <button type="button" id="add-range" class="btn-secondary">範囲を追加</button>
+            </div>
+            
+            <div class="preset-ranges">
+                <h3>よく使われる範囲:</h3>
+                <div class="preset-buttons">
+                    <button type="button" class="preset-btn" data-ranges="1-50">1〜50語</button>
+                    <button type="button" class="preset-btn" data-ranges="51-100">51〜100語</button>
+                    <button type="button" class="preset-btn" data-ranges="101-150">101〜150語</button>
+                    <button type="button" class="preset-btn" data-ranges="151-200">151〜200語</button>
+                    <button type="button" class="preset-btn" data-ranges="1-100">1〜100語</button>
+                    <button type="button" class="preset-btn" data-ranges="1-200">全範囲 (1〜200語)</button>
                 </div>
             </div>
             <div class="quiz-type-selection">
